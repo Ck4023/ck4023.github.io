@@ -21,17 +21,16 @@
             --logo-url: url('');
         }
 
-        html {
+        html, body {
             height: 100%;
+            overflow-x: hidden;
         }
 
         body {
-            height: 100%;
             font-family: 'Inter', sans-serif;
             background: linear-gradient(-45deg, var(--principal-dark), var(--aux-dark-teal), var(--aux-purple), var(--principal-dark));
             background-size: 400% 400%;
             animation: gradientBG 25s ease infinite;
-            overflow: hidden; /* Impede a rolagem da página inteira */
         }
 
         @keyframes gradientBG {
@@ -39,21 +38,6 @@
             50% { background-position: 100% 50%; }
             100% { background-position: 0% 50%; }
         }
-
-        /* Gerenciamento de telas para máxima compatibilidade */
-        .screen {
-            display: none; /* Esconde todas as telas por padrão */
-            width: 100%;
-            height: 100vh; /* Ocupa a altura total da tela */
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            overflow-y: auto; /* Permite rolagem interna se o conteúdo for muito grande em telas pequenas */
-        }
-        .screen.active {
-            display: flex; /* Mostra apenas a tela ativa */
-        }
-
 
         .card {
             background-color: rgba(38, 34, 38, 0.6);
@@ -88,12 +72,6 @@
             background-position: center;
         }
         
-        /* Correção da cor do placeholder do input */
-        #name-input::placeholder {
-            color: var(--principal-light-gray);
-            opacity: 0.7;
-        }
-        
         .shake { animation: shake 0.5s ease-in-out; }
         @keyframes shake {
             0%, 100% { transform: translateX(0); }
@@ -114,83 +92,73 @@
         }
     </style>
 </head>
-<body>
+<body class="text-gray-200">
 
-    <header id="app-header" class="p-4 fixed top-0 left-0 w-full z-50" style="display: none;">
+    <header id="app-header" class="p-4 fixed top-0 left-0 w-full z-50 hidden">
         <div class="logo"></div>
     </header>
 
-    <main class="w-full h-full">
+    <main class="min-h-screen w-full flex items-center justify-center p-4">
 
-        <!-- Tela 1: Boas-vindas (ativa por padrão) -->
-        <div id="welcome-screen" class="screen active">
-            <div class="w-full max-w-lg text-center p-4">
-                <div class="logo mx-auto mb-8" style="width: 180px; height: 50px;"></div>
-                <div class="card p-8 rounded-2xl shadow-2xl">
-                    <h1 class="text-3xl font-bold mb-2">Bem-vindo(a) ao Quiz de Afinidade!</h1>
-                    <p class="text-lg text-gray-300 mb-6">Descubra qual área do CEMP mais combina com você.</p>
-                    <input type="text" id="name-input" placeholder="Como podemos te chamar?" class="w-full px-4 py-3 rounded-lg bg-gray-800 border border-gray-600 focus:outline-none focus:ring-2 focus:ring-orange-500 text-center text-lg transition-all text-white">
-                    <p id="name-error" class="text-red-400 h-6 text-sm mt-1"></p>
-                    <button onclick="startGame()" class="btn-primary w-full mt-2 py-3 rounded-lg text-lg font-bold uppercase tracking-wider">Começar</button>
-                </div>
+        <div id="welcome-screen" class="w-full max-w-lg text-center">
+            <div class="logo mx-auto mb-8" style="width: 180px; height: 50px;"></div>
+            <div class="card p-8 rounded-2xl shadow-2xl">
+                <h1 class="text-3xl font-bold mb-2">Bem-vindo(a) ao Quiz de Afinidade!</h1>
+                <p class="text-lg text-gray-300 mb-6">Descubra qual área do CEMP mais combina com você.</p>
+                <input type="text" id="name-input" placeholder="Como podemos te chamar?" class="w-full px-4 py-3 rounded-lg bg-gray-800 border border-gray-600 focus:outline-none focus:ring-2 focus:ring-orange-500 text-center text-lg transition-all">
+                <p id="name-error" class="text-red-400 h-6 text-sm mt-1"></p>
+                <button onclick="startGame()" class="btn-primary w-full mt-2 py-3 rounded-lg text-lg font-bold uppercase tracking-wider">Começar</button>
             </div>
         </div>
 
-        <!-- Tela 2: Quiz -->
-        <div id="quiz-screen" class="screen">
-             <div class="w-full max-w-2xl p-4">
-                <div class="card p-6 sm:p-8 rounded-2xl shadow-2xl">
-                    <div class="mb-6">
-                        <div class="flex justify-between items-end mb-1">
-                            <span class="text-sm font-medium text-gray-400">Progresso</span>
-                            <span id="progress-text" class="text-sm font-bold text-orange-400"></span>
-                        </div>
-                        <div class="w-full bg-gray-700 rounded-full h-2.5">
-                            <div id="progress-bar" class="bg-orange-500 h-2.5 rounded-full transition-all duration-500"></div>
-                        </div>
+        <div id="quiz-screen" class="w-full max-w-2xl hidden">
+            <div class="card p-6 sm:p-8 rounded-2xl shadow-2xl">
+                <div class="mb-6">
+                    <div class="flex justify-between items-end mb-1">
+                        <span class="text-sm font-medium text-gray-400">Progresso</span>
+                        <span id="progress-text" class="text-sm font-bold text-orange-400"></span>
                     </div>
-                    <h2 id="question-text" class="text-2xl sm:text-3xl font-bold mb-8 text-center min-h-[100px] transition-opacity duration-300"></h2>
-                    <div id="answers-container" class="grid grid-cols-1 sm:grid-cols-2 gap-4"></div>
+                    <div class="w-full bg-gray-700 rounded-full h-2.5">
+                        <div id="progress-bar" class="bg-orange-500 h-2.5 rounded-full transition-all duration-500"></div>
+                    </div>
                 </div>
+                <h2 id="question-text" class="text-2xl sm:text-3xl font-bold mb-8 text-center min-h-[100px] transition-opacity duration-300"></h2>
+                <div id="answers-container" class="grid grid-cols-1 sm:grid-cols-2 gap-4"></div>
             </div>
         </div>
 
-        <!-- Tela 3: Resultados -->
-        <div id="results-screen" class="screen">
-            <div class="w-full max-w-4xl text-center p-4">
-                 <div class="card p-8 sm:p-12 rounded-2xl shadow-2xl">
-                    <h1 id="results-title" class="text-3xl sm:text-4xl font-bold mb-4"></h1>
-                    <p id="results-subtitle" class="text-lg text-gray-300 mb-10"></p>
+        <div id="results-screen" class="w-full max-w-4xl text-center hidden">
+             <div class="card p-8 sm:p-12 rounded-2xl shadow-2xl">
+                <h1 id="results-title" class="text-3xl sm:text-4xl font-bold mb-4 opacity-0"></h1>
+                <p id="results-subtitle" class="text-lg text-gray-300 mb-10 opacity-0">Descobrimos as áreas que mais combinam com seu perfil.</p>
 
-                    <div class="flex flex-col sm:flex-row items-center justify-center gap-8 sm:gap-12">
-                        <div id="result-2-card" class="flex flex-col items-center order-2 sm:order-1">
-                            <div id="result-2-circle" class="w-40 h-40 sm:w-48 sm:h-48 rounded-full flex items-center justify-center p-4 text-center font-bold text-2xl" style="background-color: var(--aux-teal);">
-                                <span id="result-2-name"></span>
-                            </div>
-                            <h3 class="mt-4 text-xl font-semibold text-gray-400">2ª Maior Afinidade</h3>
+                <div class="flex flex-col sm:flex-row items-center justify-center gap-8 sm:gap-12">
+                    <div id="result-2-card" class="flex flex-col items-center order-2 sm:order-1 opacity-0">
+                        <div id="result-2-circle" class="w-40 h-40 sm:w-48 sm:h-48 rounded-full flex items-center justify-center p-4 text-center font-bold text-2xl" style="background-color: var(--aux-teal);">
+                            <span id="result-2-name"></span>
                         </div>
-                        <div id="result-1-card" class="flex flex-col items-center order-1 sm:order-2">
-                            <div id="result-1-circle" class="w-56 h-56 sm:w-72 sm:h-72 rounded-full flex items-center justify-center p-6 text-center font-black text-4xl" style="background-color: var(--principal-orange);">
-                                <span id="result-1-name"></span>
-                            </div>
-                            <h3 class="mt-4 text-2xl font-bold">Sua Principal Afinidade!</h3>
+                        <h3 class="mt-4 text-xl font-semibold text-gray-400">2ª Maior Afinidade</h3>
+                    </div>
+                    <div id="result-1-card" class="flex flex-col items-center order-1 sm:order-2 opacity-0">
+                        <div id="result-1-circle" class="w-56 h-56 sm:w-72 sm:h-72 rounded-full flex items-center justify-center p-6 text-center font-black text-4xl" style="background-color: var(--principal-orange);">
+                            <span id="result-1-name"></span>
                         </div>
+                        <h3 class="mt-4 text-2xl font-bold">Sua Principal Afinidade!</h3>
                     </div>
-
-                    <div id="result-description-card" class="mt-12 text-left">
-                        <h4 class="text-2xl font-bold text-orange-400 mb-3 text-center">Por que essa é a sua área?</h4>
-                        <p id="result-1-description" class="text-lg text-gray-300 max-w-3xl mx-auto bg-gray-900/50 p-6 rounded-lg"></p>
-                    </div>
-
-                    <button id="restart-button" onclick="restartQuiz()" class="btn-primary w-full max-w-xs mx-auto mt-12 py-3 rounded-lg text-lg font-bold">Refazer o Quiz</button>
                 </div>
+
+                <div id="result-description-card" class="mt-12 opacity-0 text-left">
+                    <h4 class="text-2xl font-bold text-orange-400 mb-3 text-center">Por que essa é a sua área?</h4>
+                    <p id="result-1-description" class="text-lg text-gray-300 max-w-3xl mx-auto bg-gray-900/50 p-6 rounded-lg"></p>
+                </div>
+
+                <button id="restart-button" onclick="restartQuiz()" class="btn-primary w-full max-w-xs mx-auto mt-12 py-3 rounded-lg text-lg font-bold opacity-0">Refazer o Quiz</button>
             </div>
         </div>
 
     </main>
 
     <script>
-        // --- DADOS ---
         const quizData = [
             { question: "Em um projeto em grupo, qual papel você naturalmente assume?", answers: [ { text: "Organizo as tarefas e prazos", target: "Diretoria de Projetos" }, { text: "Tenho as ideias criativas", target: "Marketing" }, { text: "Cuido do bem-estar e motivação da equipe", target: "Gestão de Pessoas" }, { text: "Conecto o grupo com outras pessoas", target: "Comercial" } ] },
             { question: "O que mais te motiva em um desafio?", answers: [ { text: "Ver um plano bem executado do início ao fim", target: "Diretoria de Projetos" }, { text: "Criar uma solução que ninguém pensou antes", target: "P&D" }, { text: "Alcançar e superar metas de vendas", target: "Comercial" }, { text: "Garantir que todos na equipe estejam evoluindo", target: "Gestão de Pessoas" } ] },
@@ -213,36 +181,17 @@
             "Internacionalização": "Você tem uma visão global e se interessa por outras culturas e mercados. Sua área ideal é a que promove eventos, capacitações e rodas de conversa sobre intercâmbio e o mercado internacional, conectando os membros do CEMP com o mundo."
         };
 
-        // --- VARIÁVEIS DE ESTADO ---
         let currentQuestionIndex = 0;
         let scores = {};
         let userName = "";
 
-        // --- ELEMENTOS DO DOM ---
+        const welcomeScreen = document.getElementById('welcome-screen');
+        const quizScreen = document.getElementById('quiz-screen');
+        const resultsScreen = document.getElementById('results-screen');
         const appHeader = document.getElementById('app-header');
         const nameInput = document.getElementById('name-input');
         const nameError = document.getElementById('name-error');
-        const screens = document.querySelectorAll('.screen');
 
-        // --- FUNÇÃO PARA TROCAR DE TELA ---
-        function showScreen(screenId) {
-            window.scrollTo(0, 0); 
-            screens.forEach(screen => {
-                screen.classList.remove('active');
-            });
-            const activeScreen = document.getElementById(screenId);
-            if (activeScreen) {
-                activeScreen.classList.add('active');
-            }
-            
-            if (screenId === 'quiz-screen' || screenId === 'results-screen') {
-                appHeader.style.display = 'block';
-            } else {
-                appHeader.style.display = 'none';
-            }
-        }
-
-        // --- FUNÇÕES DO JOGO ---
         function startGame() {
             userName = nameInput.value.trim();
             if (userName === "") {
@@ -253,14 +202,15 @@
             }
             nameError.textContent = "";
 
-            // Reset scores
-            scores = {};
             const allTargets = new Set(quizData.flatMap(q => q.answers.map(a => a.target)));
             allTargets.forEach(target => { scores[target] = 0; });
             
             currentQuestionIndex = 0;
             
-            showScreen('quiz-screen');
+            welcomeScreen.classList.add('hidden');
+            quizScreen.classList.remove('hidden');
+            appHeader.classList.remove('hidden');
+
             displayQuestion();
         }
 
@@ -307,7 +257,8 @@
         }
 
         function showResults() {
-            showScreen('results-screen');
+            quizScreen.classList.add('hidden');
+            resultsScreen.classList.remove('hidden');
             
             const sortedScores = Object.entries(scores).sort(([,a],[,b]) => b - a);
             
@@ -315,43 +266,48 @@
             const [result2Name] = sortedScores[1] || ["N/A", 0];
             const description = areaDescriptions[result1Name] || "Descrição não encontrada.";
 
-            // Seleciona os elementos da tela de resultados
             const resultTitle = document.getElementById('results-title');
             const resultSubtitle = document.getElementById('results-subtitle');
+            const result1Card = document.getElementById('result-1-card');
+            const result2Card = document.getElementById('result-2-card');
+            const descriptionCard = document.getElementById('result-description-card');
             const resultDescription = document.getElementById('result-1-description');
-            
-            // Pega todos os elementos que serão animados
-            const animatedElements = document.querySelectorAll('#results-screen .card > *');
+            const restartButton = document.getElementById('restart-button');
 
-            // 1. Reseta o estado visual para garantir que as animações funcionem sempre
-            animatedElements.forEach(el => el.classList.add('opacity-0'));
-            
-            // 2. Preenche o conteúdo
             resultTitle.textContent = `Parabéns, ${userName}!`;
-            resultSubtitle.textContent = "Descobrimos as áreas que mais combinam com seu perfil.";
             document.getElementById('result-1-name').textContent = result1Name;
             document.getElementById('result-2-name').textContent = result2Name;
             resultDescription.textContent = description;
 
-            // 3. Aplica as animações em cascata
-            let delay = 100;
-            animatedElements.forEach(el => {
-                setTimeout(() => {
-                    el.classList.remove('opacity-0');
-                    // Adiciona classes de animação específicas se necessário
-                    if (el.id.includes('result-1-card') || el.id.includes('result-2-card')) {
-                         el.classList.add('scale-in');
-                    } else {
-                         el.classList.add('fade-in');
-                    }
-                }, delay);
-                delay += 200; // Aumenta o atraso para o próximo elemento
-            });
+            // Animação em cascata simplificada
+            setTimeout(() => { resultTitle.classList.add('fade-in'); }, 200);
+            setTimeout(() => { resultSubtitle.classList.add('fade-in'); }, 400);
+            setTimeout(() => { result1Card.classList.add('scale-in'); }, 800);
+            setTimeout(() => { result2Card.classList.add('scale-in'); }, 1000);
+            setTimeout(() => { descriptionCard.classList.add('fade-in'); }, 1400);
+            setTimeout(() => { restartButton.classList.add('fade-in'); }, 1600);
         }
         
         function restartQuiz() {
-            nameInput.value = "";
-            showScreen('welcome-screen');
+            resultsScreen.classList.add('opacity-0', 'transition-opacity', 'duration-500');
+            appHeader.classList.add('opacity-0', 'transition-opacity', 'duration-500');
+            
+            setTimeout(() => {
+                resultsScreen.classList.add('hidden');
+                appHeader.classList.add('hidden');
+                welcomeScreen.classList.remove('hidden');
+
+                resultsScreen.classList.remove('opacity-0', 'transition-opacity', 'duration-500');
+                appHeader.classList.remove('opacity-0', 'transition-opacity', 'duration-500');
+                
+                // Reseta a opacidade dos elementos para que a animação funcione novamente
+                document.querySelectorAll('.fade-in, .scale-in').forEach(el => {
+                    el.classList.remove('fade-in', 'scale-in');
+                    el.classList.add('opacity-0');
+                });
+
+                nameInput.value = "";
+            }, 500);
         }
     </script>
 </body>
