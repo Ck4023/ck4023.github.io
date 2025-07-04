@@ -1,0 +1,338 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quiz de Afinidade - CEMP</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700;900&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --principal-orange: #ff7d1d;
+            --principal-light-gray: #d7d5d5;
+            --principal-dark: #262226;
+            --aux-teal: #00a9aa;
+            --aux-dark-teal: #007d7e;
+            --aux-red: #df0b44;
+            --aux-purple: #7d4593;
+            /* COLE AQUI O SEU CÓDIGO BASE64 DENTRO DAS ASPAS */
+            --logo-url: url('');
+        }
+
+        html, body {
+            height: 100%;
+            overflow-x: hidden;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: linear-gradient(-45deg, var(--principal-dark), var(--aux-dark-teal), var(--aux-purple), var(--principal-dark));
+            background-size: 400% 400%;
+            animation: gradientBG 25s ease infinite;
+        }
+
+        @keyframes gradientBG {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        /* Gerenciamento de telas para máxima compatibilidade */
+        .screen {
+            display: none; /* Esconde todas as telas por padrão */
+            width: 100%;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .screen.active {
+            display: flex; /* Mostra apenas a tela ativa */
+        }
+
+
+        .card {
+            background-color: rgba(38, 34, 38, 0.6);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(215, 213, 213, 0.1);
+        }
+        .btn-primary {
+            background-color: var(--principal-orange);
+            transition: background-color 0.3s, transform 0.2s;
+        }
+        .btn-primary:hover {
+            background-color: #e66a0a;
+            transform: scale(1.03);
+        }
+        .btn-answer {
+            background-color: transparent;
+            border: 2px solid var(--principal-light-gray);
+            color: var(--principal-light-gray);
+            transition: background-color 0.3s, color 0.3s, transform 0.2s;
+        }
+        .btn-answer:hover {
+            background-color: var(--principal-light-gray);
+            color: var(--principal-dark);
+            transform: scale(1.02);
+        }
+        .logo {
+            width: 150px;
+            height: 42px;
+            background-image: var(--logo-url);
+            background-size: contain;
+            background-repeat: no-repeat;
+            background-position: center;
+        }
+        
+        .shake { animation: shake 0.5s ease-in-out; }
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            25% { transform: translateX(-5px); }
+            75% { transform: translateX(5px); }
+        }
+
+        .fade-in { animation: fadeIn 0.7s ease-out forwards; }
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        .scale-in { animation: scaleIn 0.7s cubic-bezier(0.34, 1.56, 0.64, 1) forwards; }
+        @keyframes scaleIn {
+            from { opacity: 0; transform: scale(0.5); }
+            to { opacity: 1; transform: scale(1); }
+        }
+    </style>
+</head>
+<body class="text-gray-200">
+
+    <header id="app-header" class="p-4 fixed top-0 left-0 w-full z-50" style="display: none;">
+        <div class="logo"></div>
+    </header>
+
+    <main class="w-full">
+
+        <!-- Tela 1: Boas-vindas (ativa por padrão) -->
+        <div id="welcome-screen" class="screen active">
+            <div class="w-full max-w-lg text-center p-4">
+                <div class="logo mx-auto mb-8" style="width: 180px; height: 50px;"></div>
+                <div class="card p-8 rounded-2xl shadow-2xl">
+                    <h1 class="text-3xl font-bold mb-2">Bem-vindo(a) ao Quiz de Afinidade!</h1>
+                    <p class="text-lg text-gray-300 mb-6">Descubra qual área do CEMP mais combina com você.</p>
+                    <input type="text" id="name-input" placeholder="Como podemos te chamar?" class="w-full px-4 py-3 rounded-lg bg-gray-800 border border-gray-600 focus:outline-none focus:ring-2 focus:ring-orange-500 text-center text-lg transition-all">
+                    <p id="name-error" class="text-red-400 h-6 text-sm mt-1"></p>
+                    <button onclick="startGame()" class="btn-primary w-full mt-2 py-3 rounded-lg text-lg font-bold uppercase tracking-wider">Começar</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Tela 2: Quiz -->
+        <div id="quiz-screen" class="screen">
+             <div class="w-full max-w-2xl p-4">
+                <div class="card p-6 sm:p-8 rounded-2xl shadow-2xl">
+                    <div class="mb-6">
+                        <div class="flex justify-between items-end mb-1">
+                            <span class="text-sm font-medium text-gray-400">Progresso</span>
+                            <span id="progress-text" class="text-sm font-bold text-orange-400"></span>
+                        </div>
+                        <div class="w-full bg-gray-700 rounded-full h-2.5">
+                            <div id="progress-bar" class="bg-orange-500 h-2.5 rounded-full transition-all duration-500"></div>
+                        </div>
+                    </div>
+                    <h2 id="question-text" class="text-2xl sm:text-3xl font-bold mb-8 text-center min-h-[100px] transition-opacity duration-300"></h2>
+                    <div id="answers-container" class="grid grid-cols-1 sm:grid-cols-2 gap-4"></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Tela 3: Resultados -->
+        <div id="results-screen" class="screen">
+            <div class="w-full max-w-4xl text-center p-4">
+                 <div class="card p-8 sm:p-12 rounded-2xl shadow-2xl">
+                    <h1 id="results-title" class="text-3xl sm:text-4xl font-bold mb-4 opacity-0"></h1>
+                    <p id="results-subtitle" class="text-lg text-gray-300 mb-10 opacity-0">Descobrimos as áreas que mais combinam com seu perfil.</p>
+
+                    <div class="flex flex-col sm:flex-row items-center justify-center gap-8 sm:gap-12">
+                        <div id="result-2-card" class="flex flex-col items-center order-2 sm:order-1 opacity-0">
+                            <div id="result-2-circle" class="w-40 h-40 sm:w-48 sm:h-48 rounded-full flex items-center justify-center p-4 text-center font-bold text-2xl" style="background-color: var(--aux-teal);">
+                                <span id="result-2-name"></span>
+                            </div>
+                            <h3 class="mt-4 text-xl font-semibold text-gray-400">2ª Maior Afinidade</h3>
+                        </div>
+                        <div id="result-1-card" class="flex flex-col items-center order-1 sm:order-2 opacity-0">
+                            <div id="result-1-circle" class="w-56 h-56 sm:w-72 sm:h-72 rounded-full flex items-center justify-center p-6 text-center font-black text-4xl" style="background-color: var(--principal-orange);">
+                                <span id="result-1-name"></span>
+                            </div>
+                            <h3 class="mt-4 text-2xl font-bold">Sua Principal Afinidade!</h3>
+                        </div>
+                    </div>
+
+                    <div id="result-description-card" class="mt-12 opacity-0 text-left">
+                        <h4 class="text-2xl font-bold text-orange-400 mb-3 text-center">Por que essa é a sua área?</h4>
+                        <p id="result-1-description" class="text-lg text-gray-300 max-w-3xl mx-auto bg-gray-900/50 p-6 rounded-lg"></p>
+                    </div>
+
+                    <button id="restart-button" onclick="restartQuiz()" class="btn-primary w-full max-w-xs mx-auto mt-12 py-3 rounded-lg text-lg font-bold opacity-0">Refazer o Quiz</button>
+                </div>
+            </div>
+        </div>
+
+    </main>
+
+    <script>
+        // --- DADOS ---
+        const quizData = [
+            { question: "Em um projeto em grupo, qual papel você naturalmente assume?", answers: [ { text: "Organizo as tarefas e prazos", target: "Diretoria de Projetos" }, { text: "Tenho as ideias criativas", target: "Marketing" }, { text: "Cuido do bem-estar e motivação da equipe", target: "Gestão de Pessoas" }, { text: "Conecto o grupo com outras pessoas", target: "Comercial" } ] },
+            { question: "O que mais te motiva em um desafio?", answers: [ { text: "Ver um plano bem executado do início ao fim", target: "Diretoria de Projetos" }, { text: "Criar uma solução que ninguém pensou antes", target: "P&D" }, { text: "Alcançar e superar metas de vendas", target: "Comercial" }, { text: "Garantir que todos na equipe estejam evoluindo", target: "Gestão de Pessoas" } ] },
+            { question: "Qual ambiente de trabalho te atrai mais?", answers: [ { text: "Dinâmico, com brainstorming e novas ideias", target: "Marketing" }, { text: "Estruturado, com metas claras e processos definidos", target: "Diretoria de Projetos" }, { text: "Organizado, cuidando de documentos e finanças", target: "Administração" }, { text: "Social, interagindo com clientes e parceiros", target: "Comercial" } ] },
+            { question: "Se você tivesse que aprender algo novo, o que seria?", answers: [ { text: "Técnicas de pesquisa e modelagem de negócios", target: "P&D" }, { text: "Técnicas de negociação e persuasão", target: "Comercial" }, { text: "Metodologias ágeis de gerenciamento", target: "Diretoria de Projetos" }, { text: "Oratória e comunicação para redes sociais", target: "Marketing" } ] },
+            { question: "Qual o seu maior objetivo profissional?", answers: [ { text: "Liderar equipes e projetos de grande impacto", target: "Diretoria de Projetos" }, { text: "Criar uma marca ou produto de sucesso", target: "Marketing" }, { text: "Desenvolver soluções e capacitar pessoas", target: "P&D" }, { text: "Garantir a saúde financeira e legal de uma organização", target: "Administração" } ] },
+            { question: "Qual tipo de evento você mais gostaria de organizar?", answers: [ { text: "Uma grande feira para conectar a universidade ao mercado", target: "Diretoria de Projetos" }, { text: "Um ciclo de debates sobre carreira internacional", target: "Internacionalização" }, { text: "Uma série de workshops para capacitar os membros", target: "P&D" }, { text: "Uma campanha de divulgação nas redes sociais", target: "Marketing" } ] },
+            { question: "O que te dá mais satisfação no trabalho?", answers: [ { text: "Ajudar um colega a se desenvolver e alcançar seu potencial", target: "Gestão de Pessoas" }, { text: "Ver uma planilha de orçamento fechar sem erros", target: "Administração" }, { text: "Aprender algo novo e ensinar para a equipe", target: "P&D" }, { text: "Conectar-se com pessoas de outras culturas e países", target: "Internacionalização" } ] },
+            { question: "Para você, 'documentação' soa como...", answers: [ { text: "A base para tudo funcionar de forma organizada e legal", target: "Administração" }, { text: "Um registro importante do progresso de um projeto", target: "Diretoria de Projetos" }, { text: "Uma fonte de dados para pesquisas futuras", target: "P&D" }, { text: "Um obstáculo para a criatividade e agilidade", target: "Marketing" } ] },
+            { question: "Você é convidado para uma visita institucional. O que mais te interessa?", answers: [ { text: "Entender a cultura e como as pessoas são gerenciadas", target: "Gestão de Pessoas" }, { text: "Fazer contatos para futuras parcerias comerciais", target: "Comercial" }, { text: "Observar os processos e a estrutura de projetos", target: "Diretoria de Projetos" }, { text: "Conhecer as oportunidades de intercâmbio e colaboração global", target: "Internacionalização" } ] }
+        ];
+
+        const areaDescriptions = {
+            "Diretoria de Projetos": "Você tem um perfil de liderança e organização. Gosta de planejar, acompanhar e dar suporte para que as ideias saiam do papel e se tornem realidade. Sua afinidade está em gerenciar os diversos projetos do CEMP, como a Feira de Empreendedorismo e o Startcemp, garantindo que tudo corra bem.",
+            "Marketing": "Sua mente é criativa e estratégica. Você gosta de comunicar, engajar e divulgar grandes ideias. Na Diretoria de Marketing, você cuidaria das redes sociais, criaria campanhas para os eventos e projetos como o CEMPCAST, e fortaleceria a marca CEMP.",
+            "Gestão de Pessoas": "Você se importa com o desenvolvimento e bem-estar das pessoas. Seu perfil é ideal para cuidar da equipe, organizar reuniões, aplicar feedbacks, acompanhar o desenvolvimento individual (PDIs) e garantir um ambiente de trabalho saudável e produtivo.",
+            "Comercial": "Você é uma pessoa comunicativa e persuasiva, com talento para negociação e vendas. Sua área é a que busca parcerias, vende projetos como o Startcemp e conecta o CEMP com o mercado, sempre buscando novas oportunidades.",
+            "P&D": "Você é curioso, gosta de estudar, pesquisar e desenvolver novas soluções. Na Diretoria de Pesquisa e Desenvolvimento, você estaria à frente de capacitações, modelagem de negócios, grupos de estudo e da busca por inovação, fortalecendo a base de conhecimento do CEMP.",
+            "Administração": "Você é uma pessoa metódica, organizada e responsável. Gosta de processos, regras e de garantir que tudo esteja em ordem. Sua afinidade está em cuidar da documentação, do caixa, dos certificados e do inventário, sendo o pilar que sustenta a organização.",
+            "Internacionalização": "Você tem uma visão global e se interessa por outras culturas e mercados. Sua área ideal é a que promove eventos, capacitações e rodas de conversa sobre intercâmbio e o mercado internacional, conectando os membros do CEMP com o mundo."
+        };
+
+        // --- VARIÁVEIS DE ESTADO ---
+        let currentQuestionIndex = 0;
+        let scores = {};
+        let userName = "";
+
+        // --- ELEMENTOS DO DOM ---
+        const appHeader = document.getElementById('app-header');
+        const nameInput = document.getElementById('name-input');
+        const nameError = document.getElementById('name-error');
+        const screens = document.querySelectorAll('.screen');
+
+        // --- FUNÇÃO PARA TROCAR DE TELA ---
+        function showScreen(screenId) {
+            screens.forEach(screen => {
+                screen.classList.remove('active');
+            });
+            document.getElementById(screenId).classList.add('active');
+            
+            if (screenId === 'quiz-screen' || screenId === 'results-screen') {
+                appHeader.style.display = 'block';
+            } else {
+                appHeader.style.display = 'none';
+            }
+        }
+
+        // --- FUNÇÕES DO JOGO ---
+        function startGame() {
+            userName = nameInput.value.trim();
+            if (userName === "") {
+                nameError.textContent = "Por favor, digite seu nome para começar!";
+                nameInput.classList.add('shake');
+                setTimeout(() => nameInput.classList.remove('shake'), 500);
+                return;
+            }
+            nameError.textContent = "";
+
+            const allTargets = new Set(quizData.flatMap(q => q.answers.map(a => a.target)));
+            allTargets.forEach(target => { scores[target] = 0; });
+            
+            currentQuestionIndex = 0;
+            
+            showScreen('quiz-screen');
+            displayQuestion();
+        }
+
+        function displayQuestion() {
+            const question = quizData[currentQuestionIndex];
+            const questionText = document.getElementById('question-text');
+            
+            questionText.classList.add('opacity-0');
+            setTimeout(() => {
+                questionText.textContent = question.question;
+                questionText.classList.remove('opacity-0');
+            }, 300);
+
+            const answersContainer = document.getElementById('answers-container');
+            answersContainer.innerHTML = '';
+            question.answers.forEach(answer => {
+                const button = document.createElement('button');
+                button.className = 'btn-answer w-full p-4 rounded-lg text-lg font-medium';
+                button.textContent = answer.text;
+                button.onclick = () => selectAnswer(answer.target);
+                answersContainer.appendChild(button);
+            });
+
+            updateProgress();
+        }
+
+        function selectAnswer(target) {
+            if (scores[target] !== undefined) {
+                scores[target]++;
+            }
+            currentQuestionIndex++;
+
+            if (currentQuestionIndex < quizData.length) {
+                displayQuestion();
+            } else {
+                showResults();
+            }
+        }
+
+        function updateProgress() {
+            const progress = (currentQuestionIndex / quizData.length) * 100;
+            document.getElementById('progress-bar').style.width = `${progress}%`;
+            document.getElementById('progress-text').textContent = `Questão ${currentQuestionIndex + 1} de ${quizData.length}`;
+        }
+
+        function showResults() {
+            showScreen('results-screen');
+            
+            const sortedScores = Object.entries(scores).sort(([,a],[,b]) => b - a);
+            
+            const [result1Name] = sortedScores[0];
+            const [result2Name] = sortedScores[1] || ["N/A", 0];
+            const description = areaDescriptions[result1Name] || "Descrição não encontrada.";
+
+            const resultTitle = document.getElementById('results-title');
+            const resultSubtitle = document.getElementById('results-subtitle');
+            const result1Card = document.getElementById('result-1-card');
+            const result2Card = document.getElementById('result-2-card');
+            const descriptionCard = document.getElementById('result-description-card');
+            const resultDescription = document.getElementById('result-1-description');
+            const restartButton = document.getElementById('restart-button');
+
+            resultTitle.textContent = `Parabéns, ${userName}!`;
+            document.getElementById('result-1-name').textContent = result1Name;
+            document.getElementById('result-2-name').textContent = result2Name;
+            resultDescription.textContent = description;
+
+            // Animação em cascata
+            setTimeout(() => { resultTitle.classList.add('fade-in'); }, 200);
+            setTimeout(() => { resultSubtitle.classList.add('fade-in'); }, 400);
+            setTimeout(() => { result1Card.classList.add('scale-in'); }, 800);
+            setTimeout(() => { result2Card.classList.add('scale-in'); }, 1000);
+            setTimeout(() => { descriptionCard.classList.add('fade-in'); }, 1400);
+            setTimeout(() => { restartButton.classList.add('fade-in'); }, 1600);
+        }
+        
+        function restartQuiz() {
+            // Reseta a opacidade dos elementos para que a animação funcione novamente
+            document.querySelectorAll('.fade-in, .scale-in').forEach(el => {
+                el.classList.remove('fade-in', 'scale-in');
+                el.classList.add('opacity-0');
+            });
+            nameInput.value = "";
+            showScreen('welcome-screen');
+        }
+    </script>
+</body>
+</html>
+
