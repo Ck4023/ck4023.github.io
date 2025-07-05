@@ -1,0 +1,586 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <title>Descubra Sua Área Ideal no CEMP</title>
+    
+    <!-- Tailwind CSS via CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Fontes do Google -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;900&display=swap" rel="stylesheet">
+    
+    <style>
+        /* --- Variáveis de Cor e Configurações Globais --- */
+        :root {
+            --principal-orange: #ff7d1d;
+            --principal-light-gray: #e2e8f0;
+            --principal-dark: #1a181a;
+            --aux-teal: #00a9aa;
+            --aux-dark-teal: #007d7e;
+            --aux-purple: #7d4593;
+            --logo-url: url('https://placehold.co/180x50/1a181a/FF7D1D?text=CEMP+LOGO');
+        }
+
+        html, body {
+            height: 100%;
+            width: 100%;
+            overflow-x: hidden;
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+        }
+
+        body {
+            background: linear-gradient(-45deg, var(--principal-dark), #111, var(--aux-dark-teal), var(--aux-purple), var(--principal-dark));
+            background-size: 400% 400%;
+            animation: gradientBG 25s ease infinite;
+            color: var(--principal-light-gray);
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+        }
+
+        @keyframes gradientBG {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        /* Oculta o conteúdo para evitar o "flash" de conteúdo sem estilo e aguarda o JS */
+        #app-main {
+            opacity: 0;
+            transition: opacity 0.5s ease-in-out;
+        }
+        
+        .card {
+            background-color: rgba(26, 24, 26, 0.85);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            box-shadow: 0 20px 40px 0 rgba(0, 0, 0, 0.5);
+        }
+
+        .welcome-card {
+            background: linear-gradient(135deg, rgba(26, 24, 26, 0.9) 0%, rgba(0, 169, 170, 0.1) 100%);
+            backdrop-filter: blur(25px);
+            border: 2px solid rgba(255, 125, 29, 0.3);
+            box-shadow: 
+                0 25px 50px rgba(0, 0, 0, 0.6),
+                0 0 0 1px rgba(255, 255, 255, 0.1) inset;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, var(--principal-orange) 0%, #e66a0a 100%);
+            transition: all 0.3s ease;
+            color: white;
+            font-weight: 700;
+            touch-action: manipulation;
+            -webkit-tap-highlight-color: transparent;
+            cursor: pointer;
+            border: none;
+            box-shadow: 0 8px 25px rgba(255, 125, 29, 0.4);
+        }
+        .btn-primary:hover, .btn-primary:active {
+            background: linear-gradient(135deg, #e66a0a 0%, #cc5500 100%);
+            transform: translateY(-3px);
+            box-shadow: 0 12px 35px rgba(255, 125, 29, 0.6);
+        }
+
+        .btn-answer {
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.08) 0%, rgba(255, 255, 255, 0.03) 100%);
+            border: 2px solid rgba(255, 255, 255, 0.2);
+            color: var(--principal-light-gray);
+            transition: all 0.4s ease;
+            opacity: 0;
+            transform: translateY(20px);
+            animation: fadeInUp 0.6s forwards;
+            touch-action: manipulation;
+            -webkit-tap-highlight-color: transparent;
+            cursor: pointer;
+            backdrop-filter: blur(10px);
+        }
+        .btn-answer:hover, .btn-answer:active {
+            background: linear-gradient(135deg, var(--principal-orange) 0%, #e66a0a 100%);
+            border-color: var(--principal-orange);
+            color: white;
+            transform: translateY(-4px) scale(1.02);
+            box-shadow: 0 10px 30px rgba(255, 125, 29, 0.4);
+        }
+
+        .logo {
+            width: 180px;
+            height: 50px;
+            background-image: var(--logo-url);
+            background-size: contain;
+            background-repeat: no-repeat;
+            background-position: center;
+            margin: 0 auto 2rem auto;
+        }
+
+        .welcome-title {
+            background: linear-gradient(135deg, #ffffff 0%, var(--principal-orange) 50%, var(--aux-teal) 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            font-size: 2.5rem;
+            font-weight: 900;
+            text-align: center;
+            margin-bottom: 1rem;
+            line-height: 1.2;
+        }
+
+        .welcome-subtitle {
+            color: rgba(255, 255, 255, 0.8);
+            font-size: 1.1rem;
+            text-align: center;
+            margin-bottom: 2rem;
+            line-height: 1.6;
+        }
+
+        .input-enhanced {
+            background: rgba(255, 255, 255, 0.1);
+            border: 2px solid rgba(255, 255, 255, 0.2);
+            backdrop-filter: blur(10px);
+            transition: all 0.3s ease;
+        }
+        .input-enhanced:focus {
+            background: rgba(255, 255, 255, 0.15);
+            border-color: var(--principal-orange);
+            box-shadow: 0 0 0 3px rgba(255, 125, 29, 0.2);
+        }
+        
+        .shake { animation: shake 0.5s ease-in-out; }
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); } 25% { transform: translateX(-5px); } 75% { transform: translateX(5px); }
+        }
+
+        .fade-in-up { animation: fadeInUp 0.8s ease-out forwards; }
+        @keyframes fadeInUp {
+            from { opacity: 0; transform: translateY(30px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        .screen {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 100%;
+            padding: 1.5rem;
+            position: absolute;
+            top: 0;
+            left: 0;
+            transition: opacity 0.6s ease, visibility 0.6s ease;
+            visibility: visible;
+            opacity: 1;
+        }
+        .screen.hidden {
+            opacity: 0;
+            visibility: hidden;
+            pointer-events: none;
+        }
+
+        .chart-bar-container {
+            display: flex;
+            align-items: center;
+            margin-bottom: 0.75rem;
+        }
+        .chart-label {
+            width: 40%;
+            text-align: right;
+            padding-right: 1rem;
+            font-size: 0.9rem;
+            font-weight: 500;
+            color: #a0aec0;
+            flex-shrink: 0;
+        }
+        .chart-bar-wrapper {
+            width: 60%;
+            background-color: rgba(0,0,0,0.4);
+            border-radius: 6px;
+            height: 28px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            display: flex;
+            align-items: center;
+        }
+        .chart-bar {
+            height: 100%;
+            border-radius: 5px;
+            background: linear-gradient(90deg, var(--aux-teal), var(--principal-orange));
+            width: 0%;
+            transition: width 1.2s cubic-bezier(0.25, 1, 0.5, 1);
+            display: flex;
+            align-items: center;
+            justify-content: flex-end;
+            color: white;
+            font-weight: 700;
+            font-size: 0.85rem;
+        }
+
+        .percentage-badge {
+            font-size: 0.75rem;
+            font-weight: 700;
+            padding: 2px 8px;
+            border-radius: 12px;
+            white-space: nowrap;
+            flex-shrink: 0;
+        }
+
+        .percentage-badge.inside {
+            background: rgba(255, 125, 29, 0.9);
+            color: white;
+            margin-right: 6px;
+        }
+
+        .percentage-badge.outside {
+            background: none;
+            color: var(--principal-light-gray);
+            margin-left: 8px;
+        }
+
+        @media (max-width: 768px) {
+            .btn-primary, .btn-answer { min-height: 52px; font-size: 16px; }
+            input { font-size: 16px; }
+            .welcome-title { font-size: 2rem; }
+            .chart-label { width: 45%; font-size: 0.8rem; }
+            .chart-bar-wrapper { width: 55%; }
+        }
+
+        .welcome-animation { animation: welcomeSlideIn 1s ease-out forwards; }
+        @keyframes welcomeSlideIn {
+            from { opacity: 0; transform: translateY(50px) scale(0.95); }
+            to { opacity: 1; transform: translateY(0) scale(1); }
+        }
+    </style>
+</head>
+<body>
+
+    <main id="app-main" class="relative w-full h-full">
+        <!-- Tela de Boas-Vindas -->
+        <div id="welcome-screen" class="screen">
+            <div class="w-full max-w-lg text-center">
+                <div class="welcome-card p-10 rounded-3xl welcome-animation">
+                    <div class="logo"></div>
+                    <h1 class="welcome-title">Qual é a sua área ideal no CEMP?</h1>
+                    <p class="welcome-subtitle">Descubra em poucos minutos qual projeto, diretoria ou área mais combina com o seu perfil e suas paixões!</p>
+                    
+                    <div class="mb-6">
+                        <input type="text" id="name-input" placeholder="Como podemos te chamar?" 
+                               class="input-enhanced w-full px-6 py-4 rounded-xl text-center text-lg transition-all text-white placeholder-gray-300 focus:outline-none">
+                        <p id="name-error" class="text-red-400 h-6 text-sm mt-2 font-medium"></p>
+                    </div>
+                    
+                    <button id="start-button" class="btn-primary w-full py-4 rounded-xl text-lg uppercase tracking-wider font-bold">
+                        🚀 Descobrir Minha Área
+                    </button>
+                    
+                    <div class="mt-6 text-center">
+                        <p class="text-xs text-gray-400">⏱️ Leva apenas 2-3 minutos</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Tela do Quiz -->
+        <div id="quiz-screen" class="screen hidden">
+            <div class="w-full max-w-2xl">
+                <div class="card p-8 rounded-3xl">
+                    <div class="mb-8">
+                        <div class="flex justify-between items-end mb-3">
+                            <span class="text-sm font-medium text-gray-400">Progresso</span>
+                            <span id="progress-text" class="text-sm font-bold text-orange-400"></span>
+                        </div>
+                        <div class="w-full bg-gray-700 rounded-full h-3 border border-gray-600">
+                            <div id="progress-bar" class="bg-gradient-to-r from-orange-500 to-orange-400 h-full rounded-full transition-all duration-700 shadow-lg"></div>
+                        </div>
+                    </div>
+                    <h2 id="question-text" class="text-2xl sm:text-3xl font-bold mb-10 text-center min-h-[120px] flex items-center justify-center transition-opacity duration-300 text-white leading-relaxed"></h2>
+                    <div id="answers-container" class="grid grid-cols-1 sm:grid-cols-2 gap-5"></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Tela de Resultados -->
+        <div id="results-screen" class="screen hidden">
+             <div class="w-full max-w-5xl text-center">
+                 <div class="card p-10 sm:p-12 rounded-3xl">
+                    <div class="fade-in-up">
+                        <h1 id="results-title" class="text-3xl sm:text-4xl font-bold mb-3 text-white"></h1>
+                        <p class="text-xl text-orange-400 font-bold mb-10">🎯 Este é o seu perfil de afinidade!</p>
+                    </div>
+                    
+                    <div class="grid grid-cols-1 lg:grid-cols-2 gap-10 items-start">
+                        <!-- Coluna da Esquerda: Resultado(s) Principal(is) -->
+                        <div id="top-results-column" class="text-left fade-in-up" style="animation-delay: 200ms;">
+                            <h2 id="top-results-heading" class="text-2xl font-bold text-white mb-6"></h2>
+                            <div id="top-results-container" class="space-y-6">
+                                <!-- Resultados principais serão inseridos aqui -->
+                            </div>
+                        </div>
+
+                        <!-- Coluna da Direita: Gráfico de Afinidades -->
+                        <div class="text-left fade-in-up" style="animation-delay: 400ms;">
+                            <h2 class="text-2xl font-bold text-white mb-6">📊 Seu Perfil Completo</h2>
+                            <div id="affinity-chart" class="bg-gray-900/60 p-6 rounded-2xl border border-gray-700">
+                                <!-- O gráfico será inserido aqui pelo JS -->
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="fade-in-up mt-12" style="animation-delay: 600ms;">
+                        <h3 class="text-xl font-bold text-white mb-6">🚀 Próximos Passos</h3>
+                         <div class="mt-6 flex flex-col sm:flex-row gap-4 justify-center">
+                            <a href="https://forms.gle/67Q3tTkFkCbQDkETA" target="_blank" rel="noopener noreferrer" 
+                               class="flex items-center justify-center gap-2 w-full sm:w-auto bg-green-500 text-white font-bold py-4 px-8 rounded-xl hover:bg-green-600 transition-all transform hover:-translate-y-1 shadow-lg">
+                                📝 Inscreva-se no Processo Seletivo
+                            </a>
+                            <a href="https://www.instagram.com/cempufc?igsh=MXV4NWo2cnJlbG5wdg==" target="_blank" rel="noopener noreferrer" 
+                               class="flex items-center justify-center gap-2 w-full sm:w-auto bg-pink-500 text-white font-bold py-4 px-8 rounded-xl hover:bg-pink-600 transition-all transform hover:-translate-y-1 shadow-lg">
+                                📱 Siga nosso Instagram
+                            </a>
+                        </div>
+                        <button id="restart-button" class="btn-primary w-full max-w-xs mx-auto mt-8 py-4 rounded-xl text-lg font-bold">
+                            🔄 Refazer o Quiz
+                        </button>
+                    </div>
+                 </div>
+             </div>
+        </div>
+    </main>
+
+    <script>
+        // Função de inicialização principal que encapsula toda a lógica do quiz
+        function initializeQuiz() {
+            
+            // --- FUNÇÃO AUXILIAR: Embaralhar arrays (Algoritmo Fisher-Yates) ---
+            // Movida para dentro para melhor encapsulamento
+            function shuffleArray(array) {
+                const newArr = array.slice(); 
+                for (let i = newArr.length - 1; i > 0; i--) {
+                    const j = Math.floor(Math.random() * (i + 1));
+                    [newArr[i], newArr[j]] = [newArr[j], newArr[i]];
+                }
+                return newArr;
+            }
+
+            try {
+                // --- Seleção de Elementos do DOM ---
+                const screens = {
+                    welcome: document.getElementById('welcome-screen'),
+                    quiz: document.getElementById('quiz-screen'),
+                    results: document.getElementById('results-screen')
+                };
+                
+                const nameInput = document.getElementById('name-input');
+                const nameError = document.getElementById('name-error');
+                const startButton = document.getElementById('start-button');
+                const restartButton = document.getElementById('restart-button');
+                const questionText = document.getElementById('question-text');
+                const answersContainer = document.getElementById('answers-container');
+                const progressBar = document.getElementById('progress-bar');
+                const progressText = document.getElementById('progress-text');
+                const resultsTitle = document.getElementById('results-title');
+                const topResultsHeading = document.getElementById('top-results-heading');
+                const topResultsContainer = document.getElementById('top-results-container');
+                const affinityChart = document.getElementById('affinity-chart');
+
+                // --- Dados do Quiz (Áreas e Perguntas) ---
+                const areaDetails = {
+                    "Feira de Empreendedorismo": { type: "Projeto", description: "Você gosta de grandes eventos e de conectar pessoas. Sua afinidade está em organizar nossa Feira de Empreendedorismo, um dos maiores eventos da UFC que conecta a universidade a empreendedores." },
+                    "Startcemp": { type: "Projeto", description: "Você tem um perfil prático e gosta de transformar conhecimento em ação. No Startcemp, você ajudaria a criar e vender capacitações para o público externo, gerando valor e receita." },
+                    "CEMPCAST": { type: "Projeto", description: "Você é um bom comunicador e se interessa por empreendedorismo e inovação. No CEMPCAST, você participaria da produção do nosso podcast, entrevistando pessoas e discutindo temas relevantes." },
+                    "Mentoring": { type: "Projeto", description: "Você tem um forte desejo de ajudar os outros a crescer. No projeto Mentoring, você ofereceria mentorias gratuitas para pequenos empreendedores, compartilhando seu conhecimento." },
+                    "InovaCEMP": { type: "Projeto", description: "Você é movido por desafios e inovação. No InovaCEMP, você atuaria em hackathons e disciplinas de empreendedorismo, criando soluções criativas para problemas reais." },
+                    "Sensibilizando": { type: "Projeto", description: "Você acredita no poder da educação e da inspiração. No projeto Sensibilizando, você faria apresentações em escolas para despertar o interesse dos jovens pelo empreendedorismo." },
+                    "Gestão de Pessoas": { type: "Área", description: "Você se importa com o desenvolvimento e bem-estar das pessoas. Seu perfil é ideal para cuidar da equipe, organizar reuniões, aplicar feedbacks e garantir um ambiente de trabalho saudável." },
+                    "Marketing": { type: "Diretoria", description: "Sua mente é criativa e estratégica. Você gosta de comunicar, engajar e divulgar grandes ideias. Na Diretoria de Marketing, você cuidaria das redes sociais, criaria campanhas e fortaleceria a marca CEMP." },
+                    "Administração": { type: "Diretoria", description: "Você é uma pessoa metódica e organizada. Gosta de processos e de garantir que tudo esteja em ordem. Sua afinidade está em cuidar da documentação, do caixa e dos certificados." },
+                    "P&D": { type: "Diretoria", description: "Você é curioso, gosta de estudar e desenvolver novas soluções. Na Diretoria de P&D, você estaria à frente de capacitações, modelagem de negócios e da busca por inovação." },
+                    "Internacionalização": { type: "Área", description: "Você tem uma visão global e se interessa por outras culturas. Sua área ideal é a que promove eventos sobre intercâmbio e o mercado internacional, conectando os membros com o mundo." }
+                };
+
+                const quizData = [
+                    { question: "O que te parece mais interessante?", answers: [ { text: "Organizar um grande evento do zero", targets: { "Feira de Empreendedorismo": 1, "Gestão de Pessoas": 0.3 } }, { text: "Criar e vender um curso online", targets: { "Startcemp": 1, "P&D": 0.4 } }, { text: "Apresentar um podcast", targets: { "CEMPCAST": 1, "Marketing": 0.5 } }, { text: "Ajudar um pequeno negócio a crescer", targets: { "Mentoring": 1, "Gestão de Pessoas": 0.3 } } ] },
+                    { question: "Em um dia de trabalho, você preferiria...", answers: [ { text: "Analisar o engajamento das redes sociais", targets: { "Marketing": 1, "P&D": 0.3 } }, { text: "Organizar documentos e planilhas financeiras", targets: { "Administração": 1, "Startcemp": 0.2 } }, { text: "Conduzir uma sessão de feedback com a equipe", targets: { "Gestão de Pessoas": 1 } }, { text: "Pesquisar sobre novas tendências de mercado", targets: { "P&D": 1, "Marketing": 0.4 } } ] },
+                    { question: "Qual habilidade você mais gostaria de desenvolver?", answers: [ { text: "Oratória para inspirar jovens", targets: { "Sensibilizando": 1, "CEMPCAST": 0.4 } }, { text: "Resolução de problemas sob pressão", targets: { "InovaCEMP": 1, "Feira de Empreendedorismo": 0.5 } }, { text: "Networking e conexões internacionais", targets: { "Internacionalização": 1, "Feira de Empreendedorismo": 0.3 } }, { text: "Criação de conteúdo para mídias digitais", targets: { "Marketing": 1, "CEMPCAST": 0.3 } } ] },
+                    { question: "O que te dá mais satisfação?", answers: [ { text: "Ver um projeto complexo ser entregue com sucesso", targets: { "Feira de Empreendedorismo": 1, "Administração": 0.4 } }, { text: "Ensinar algo novo e ver as pessoas aprendendo", targets: { "P&D": 1, "Mentoring": 0.5, "Sensibilizando": 0.3 } }, { text: "Ver o crescimento e a motivação da equipe", targets: { "Gestão de Pessoas": 1 } }, { text: "Ver o caixa da empresa fechando no azul", targets: { "Administração": 1, "Startcemp": 0.5 } } ] },
+                    { question: "Seu ambiente ideal de trabalho é...", answers: [ { text: "Dinâmico e criativo, sempre pensando na próxima campanha", targets: { "Marketing": 1, "InovaCEMP": 0.4 } }, { text: "Colaborativo e focado em ajudar pessoas", targets: { "Mentoring": 1, "Gestão de Pessoas": 0.6 } }, { text: "Estruturado, com foco em metas e organização", targets: { "Administração": 1, "P&D": 0.3 } }, { text: "Competitivo e inovador, como um hackathon", targets: { "InovaCEMP": 1 } } ] },
+                    { question: "Como você prefere compartilhar conhecimento?", answers: [ { text: "Através de um podcast informativo", targets: { "CEMPCAST": 1, "Marketing": 0.4 } }, { text: "Dando palestras inspiradoras em escolas", targets: { "Sensibilizando": 1, "Internacionalização": 0.3 } }, { text: "Criando workshops e capacitações internas", targets: { "P&D": 1, "Gestão de Pessoas": 0.3 } }, { text: "Em conversas um a um, como mentor", targets: { "Mentoring": 1 } } ] },
+                    { question: "Qual destes desafios te atrai mais?", answers: [ { text: "Criar um produto educacional que gere lucro", targets: { "Startcemp": 1, "P&D": 0.5 } }, { text: "Organizar um evento que conecte o CEMP com o mundo", targets: { "Internacionalização": 1, "Feira de Empreendedorismo": 0.5 } }, { text: "Garantir que todos os membros estejam felizes e produtivos", targets: { "Gestão de Pessoas": 1 } }, { text: "Planejar a maior feira da universidade", targets: { "Feira de Empreendedorismo": 1 } } ] },
+                    { question: "Quando confrontado com uma tarefa repetitiva, você...", answers: [ { text: "Busco automatizar ou encontrar uma forma mais inteligente de fazer", targets: { "P&D": 1, "Administração": 0.4 } }, { text: "Delego para focar no que é mais estratégico", targets: { "Gestão de Pessoas": 1 } }, { text: "Executo com precisão, pois a consistência é importante", targets: { "Administração": 1 } }, { text: "Tento tornar a tarefa mais divertida ou criativa", targets: { "Marketing": 1, "CEMPCAST": 0.3 } } ] },
+                    { question: "O que é mais crucial para o sucesso de um projeto?", answers: [ { text: "Um plano impecável e bem gerenciado", targets: { "Administração": 1, "Feira de Empreendedorismo": 0.6 } }, { text: "Uma equipe motivada e alinhada", targets: { "Gestão de Pessoas": 1 } }, { text: "Uma divulgação forte que alcance o público certo", targets: { "Marketing": 1 } }, { text: "Uma solução verdadeiramente inovadora", targets: { "InovaCEMP": 1, "P&D": 0.6 } } ] },
+                    { question: "Você se sente mais energizado ao...", answers: [ { text: "Começar um projeto novo do zero", targets: { "P&D": 1, "InovaCEMP": 0.5 } }, { text: "Otimizar um processo que já existe", targets: { "Administração": 1, "Gestão de Pessoas": 0.3 } }, { text: "Conectar pessoas e ideias em um evento", targets: { "Internacionalização": 1, "Feira de Empreendedorismo": 0.5, "CEMPCAST": 0.3 } }, { text: "Ver o resultado de uma campanha de sucesso", targets: { "Marketing": 1 } } ] },
+                    { question: "Ao resolver um problema, você tende a...", answers: [ { text: "Confiar na sua intuição e criatividade", targets: { "Marketing": 1, "InovaCEMP": 0.6 } }, { text: "Analisar dados e fatos antes de decidir", targets: { "P&D": 1, "Administração": 0.6 } }, { text: "Buscar a opinião de outras pessoas", targets: { "Gestão de Pessoas": 1, "Mentoring": 0.4 } }, { text: "Testar várias soluções rapidamente", targets: { "InovaCEMP": 1, "Startcemp": 0.4 } } ] }
+                ];
+
+                // --- Estado do Quiz ---
+                let currentQuestion = 0;
+                let scores = {};
+                let userName = '';
+                let shuffledQuestions = [];
+
+                // --- Funções do Quiz ---
+                function showScreen(screenName) {
+                    Object.values(screens).forEach(screen => screen.classList.add('hidden'));
+                    screens[screenName].classList.remove('hidden');
+                }
+
+                function validateName() {
+                    const name = nameInput.value.trim();
+                    if (name === '') {
+                        nameError.textContent = 'Por favor, digite seu nome para continuar.';
+                        nameInput.classList.add('shake');
+                        setTimeout(() => nameInput.classList.remove('shake'), 500);
+                        return false;
+                    }
+                    nameError.textContent = '';
+                    return true;
+                }
+
+                function startQuiz() {
+                    if (!validateName()) return;
+                    userName = nameInput.value.trim();
+                    shuffledQuestions = shuffleArray(quizData);
+                    currentQuestion = 0;
+                    scores = {};
+                    Object.keys(areaDetails).forEach(area => scores[area] = 0);
+                    showScreen('quiz');
+                    displayQuestion();
+                }
+
+                function displayQuestion() {
+                    const question = shuffledQuestions[currentQuestion];
+                    const shuffledAnswers = shuffleArray(question.answers);
+                    questionText.textContent = question.question;
+                    answersContainer.innerHTML = '';
+                    
+                    shuffledAnswers.forEach((answer, index) => {
+                        const button = document.createElement('button');
+                        button.className = 'btn-answer p-5 rounded-xl text-left';
+                        button.style.animationDelay = `${index * 150}ms`;
+                        button.textContent = answer.text;
+                        button.onclick = () => selectAnswer(answer);
+                        answersContainer.appendChild(button);
+                    });
+
+                    updateProgress();
+                }
+
+                function selectAnswer(answer) {
+                    Object.entries(answer.targets).forEach(([area, points]) => {
+                        scores[area] += points;
+                    });
+
+                    currentQuestion++;
+                    if (currentQuestion < shuffledQuestions.length) {
+                        setTimeout(displayQuestion, 300);
+                    } else {
+                        setTimeout(showResults, 300);
+                    }
+                }
+
+                function updateProgress() {
+                    const progress = ((currentQuestion + 1) / shuffledQuestions.length) * 100;
+                    progressBar.style.width = `${progress}%`;
+                    progressText.textContent = `${currentQuestion + 1}/${shuffledQuestions.length}`;
+                }
+
+                function showResults() {
+                    const sortedScores = Object.entries(scores).sort((a, b) => b[1] - a[1]);
+                    const topScore = sortedScores[0][1];
+                    const topResults = sortedScores.filter(([, score]) => score === topScore);
+
+                    resultsTitle.textContent = `Parabéns, ${userName}! 🎉`;
+                    topResultsHeading.textContent = topResults.length === 1 ? '🏆 Sua Maior Afinidade' : '🏆 Suas Maiores Afinidades (Empate)';
+
+                    topResultsContainer.innerHTML = '';
+                    topResults.forEach(([area]) => {
+                        const details = areaDetails[area];
+                        const percentage = calculatePercentage(scores[area]);
+                        const resultDiv = document.createElement('div');
+                        resultDiv.className = 'bg-gradient-to-r from-orange-500/20 to-orange-600/20 border-2 border-orange-500/40 p-6 rounded-xl backdrop-blur-sm';
+                        resultDiv.innerHTML = `
+                            <div class="flex justify-between items-start mb-3">
+                                <h3 class="text-xl font-bold text-orange-400">${area}</h3>
+                                <span class="percentage-badge inside">${percentage}%</span>
+                            </div>
+                            <p class="text-sm text-gray-300 mb-3"><strong>📍 ${details.type}</strong></p>
+                            <p class="text-gray-200 leading-relaxed">${details.description}</p>
+                        `;
+                        topResultsContainer.appendChild(resultDiv);
+                    });
+
+                    displayAffinityChart(sortedScores);
+                    showScreen('results');
+                }
+
+                function calculatePercentage(score) {
+                    const maxPossibleScore = 6;
+                    const percentage = Math.min(Math.round((score / maxPossibleScore) * 100), 100);
+                    return Math.max(percentage, 15);
+                }
+
+                function displayAffinityChart(sortedScores) {
+                    affinityChart.innerHTML = '';
+                    sortedScores.forEach(([area, score]) => {
+                        const percentage = calculatePercentage(score);
+                        const barContainer = document.createElement('div');
+                        barContainer.className = 'chart-bar-container';
+                        
+                        const isLabelInside = percentage >= 50;
+                        const badgeHTML = `<span class="percentage-badge ${isLabelInside ? 'inside' : 'outside'}">${percentage}%</span>`;
+
+                        barContainer.innerHTML = `
+                            <div class="chart-label">${area}</div>
+                            <div class="chart-bar-wrapper">
+                                <div class="chart-bar" data-width="${percentage}%">
+                                    ${isLabelInside ? badgeHTML : ''}
+                                </div>
+                                ${!isLabelInside ? badgeHTML : ''}
+                            </div>
+                        `;
+                        affinityChart.appendChild(barContainer);
+                    });
+
+                    setTimeout(() => {
+                        affinityChart.querySelectorAll('.chart-bar').forEach(bar => {
+                            bar.style.width = bar.dataset.width;
+                        });
+                    }, 200);
+                }
+                
+                function restartQuiz() {
+                    nameInput.value = '';
+                    nameError.textContent = '';
+                    showScreen('welcome');
+                }
+
+                // --- Configuração dos Event Listeners ---
+                startButton.addEventListener('click', startQuiz);
+                restartButton.addEventListener('click', restartQuiz);
+                nameInput.addEventListener('keypress', (e) => {
+                    if (e.key === 'Enter') startQuiz();
+                });
+                
+            } catch (error) {
+                console.error('Erro na inicialização do quiz:', error);
+                document.body.innerHTML = `<div class="text-white text-center p-8">Erro ao carregar o quiz. Por favor, recarregue a página. Detalhe: ${error.message}</div>`;
+            }
+        }
+
+        // --- CORREÇÃO: Lógica de Inicialização Simplificada e Confiável ---
+        document.addEventListener('DOMContentLoaded', () => {
+            try {
+                // Roda a função principal que prepara tudo
+                initializeQuiz();
+                // Torna a aplicação visível apenas quando tudo estiver pronto
+                document.getElementById('app-main').style.opacity = 1;
+            } catch (e) {
+                console.error("Falha fatal ao inicializar o quiz:", e);
+                // Exibe uma mensagem de erro caso algo muito grave aconteça
+                document.body.innerHTML = `<div class="w-screen h-screen flex items-center justify-center text-white text-center p-8">Ocorreu um erro crítico ao carregar. Por favor, atualize a página.</div>`;
+            }
+        });
+    </script>
+</body>
+</html>
