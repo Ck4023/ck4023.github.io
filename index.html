@@ -128,25 +128,26 @@
 </head>
 <body class="text-gray-200">
 
-    <header id="app-header" class="p-4 fixed top-0 left-0 w-full z-50 hidden">
+    <header id="app-header" class="p-4 fixed top-0 left-0 w-full z-50" style="display: none;">
         <div class="logo"></div>
     </header>
 
     <main class="min-h-screen w-full flex items-center justify-center p-4">
 
-        <div id="welcome-screen" class="w-full max-w-lg text-center">
-            <div class="logo mx-auto mb-8" style="width: 180px; height: 50px;"></div>
+        <!-- Adicionada a classe .screen para gerenciamento -->
+        <div id="welcome-screen" class="screen w-full max-w-lg text-center">
             <div class="card p-8 rounded-2xl shadow-2xl">
+                <div class="logo mx-auto mb-8" style="width: 180px; height: 50px;"></div>
                 <h1 class="text-3xl font-bold mb-2">Bem-vindo(a) ao Quiz de Afinidade!</h1>
                 <p class="text-lg text-gray-300 mb-6">Descubra qual projeto ou área do CEMP mais combina com você.</p>
                 <input type="text" id="name-input" placeholder="Como podemos te chamar?" class="w-full px-4 py-3 rounded-lg bg-gray-800 border border-gray-600 focus:outline-none focus:ring-2 focus:ring-orange-500 text-center text-lg transition-all text-white">
                 <p id="name-error" class="text-red-400 h-6 text-sm mt-1"></p>
-                <!-- Removido o onclick e adicionado um ID -->
                 <button id="start-button" class="btn-primary ripple-effect w-full mt-2 py-3 rounded-lg text-lg font-bold uppercase tracking-wider">Começar</button>
             </div>
         </div>
 
-        <div id="quiz-screen" class="w-full max-w-2xl hidden">
+        <!-- Adicionada a classe .screen para gerenciamento -->
+        <div id="quiz-screen" class="screen w-full max-w-2xl">
             <div class="card p-6 sm:p-8 rounded-2xl shadow-2xl">
                 <div class="mb-6">
                     <div class="flex justify-between items-end mb-1">
@@ -162,7 +163,8 @@
             </div>
         </div>
 
-        <div id="results-screen" class="w-full max-w-4xl text-center hidden">
+        <!-- Adicionada a classe .screen para gerenciamento -->
+        <div id="results-screen" class="screen w-full max-w-4xl text-center">
              <div class="card p-8 sm:p-12 rounded-2xl shadow-2xl">
                 <h1 id="results-title" class="text-3xl sm:text-4xl font-bold mb-1 opacity-0"></h1>
                 <p id="result-type" class="text-lg text-orange-400 font-bold mb-4 opacity-0"></p>
@@ -193,7 +195,6 @@
                     <div id="other-results-container" class="flex flex-wrap items-center justify-center gap-4"></div>
                 </div>
 
-                <!-- Removido o onclick e adicionado um ID -->
                 <button id="restart-button" class="btn-primary ripple-effect w-full max-w-xs mx-auto mt-12 py-3 rounded-lg text-lg font-bold opacity-0">Refazer o Quiz</button>
                 
                 <div id="cta-buttons" class="mt-6 flex flex-col sm:flex-row gap-4 justify-center opacity-0">
@@ -213,7 +214,6 @@
     </main>
 
     <script>
-        // *** A Mágica Acontece Aqui: Espera a página carregar antes de rodar o script ***
         document.addEventListener('DOMContentLoaded', () => {
 
             const areaDetails = {
@@ -242,4 +242,4 @@
                 { question: "O que é mais crucial para o sucesso de um projeto?", answers: [ { text: "Um plano impecável e bem gerenciado", target: "Feira de Empreendedorismo" }, { text: "Uma equipe motivada e alinhada", target: "Gestão de Pessoas" }, { text: "Uma divulgação forte que alcance o público certo", target: "Marketing" }, { text: "Um produto ou solução verdadeiramente inovador", target: "InovaCEMP" } ] },
                 { question: "Você se sente mais energizado ao...", answers: [ { text: "Começar um projeto novo do zero", target: "P&D" }, { text: "Otimizar um processo que já existe", target: "Administração" }, { text: "Conectar-se com parceiros e clientes", target: "Internacionalização" }, { text: "Vender uma ideia ou produto em que acredita", target: "Startcemp" } ] },
                 { question: "Qual tipo de feedback te motiva mais?", answers: [ { text: "Dados e métricas que mostram o resultado do seu trabalho", target: "Marketing" }, { text: "Um elogio sobre sua capacidade de ajudar e apoiar os outros", target: "Mentoring" }, { text: "Reconhecimento pela sua organização e atenção aos detalhes", target: "Administração" }, { text: "Um desafio para pensar em uma solução ainda melhor", target: "InovaCEMP" } ] },
-                { question: "Seu 'supe
+                { question: "Seu 'sup
