@@ -23,6 +23,7 @@
 
         html, body {
             height: 100%;
+            width: 100%;
             overflow-x: hidden;
         }
 
@@ -124,93 +125,103 @@
             from { opacity: 0; transform: scale(0.5); }
             to { opacity: 1; transform: scale(1); }
         }
+        
+        /* Classe de tela para gerenciamento */
+        .screen {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 100%;
+            padding: 1rem;
+        }
     </style>
 </head>
 <body class="text-gray-200">
 
-    <header id="app-header" class="p-4 fixed top-0 left-0 w-full z-50" style="display: none;">
+    <header id="app-header" class="p-4 fixed top-0 left-0 w-full z-50 hidden">
         <div class="logo"></div>
     </header>
 
-    <main class="min-h-screen w-full flex items-center justify-center p-4">
-
-        <!-- Adicionada a classe .screen para gerenciamento -->
-        <div id="welcome-screen" class="screen w-full max-w-lg text-center">
-            <div class="card p-8 rounded-2xl shadow-2xl">
-                <div class="logo mx-auto mb-8" style="width: 180px; height: 50px;"></div>
-                <h1 class="text-3xl font-bold mb-2">Bem-vindo(a) ao Quiz de Afinidade!</h1>
-                <p class="text-lg text-gray-300 mb-6">Descubra qual projeto ou área do CEMP mais combina com você.</p>
-                <input type="text" id="name-input" placeholder="Como podemos te chamar?" class="w-full px-4 py-3 rounded-lg bg-gray-800 border border-gray-600 focus:outline-none focus:ring-2 focus:ring-orange-500 text-center text-lg transition-all text-white">
-                <p id="name-error" class="text-red-400 h-6 text-sm mt-1"></p>
-                <button id="start-button" class="btn-primary ripple-effect w-full mt-2 py-3 rounded-lg text-lg font-bold uppercase tracking-wider">Começar</button>
-            </div>
-        </div>
-
-        <!-- Adicionada a classe .screen para gerenciamento -->
-        <div id="quiz-screen" class="screen w-full max-w-2xl">
-            <div class="card p-6 sm:p-8 rounded-2xl shadow-2xl">
-                <div class="mb-6">
-                    <div class="flex justify-between items-end mb-1">
-                        <span class="text-sm font-medium text-gray-400">Progresso</span>
-                        <span id="progress-text" class="text-sm font-bold text-orange-400"></span>
-                    </div>
-                    <div class="w-full bg-gray-700 rounded-full h-2.5">
-                        <div id="progress-bar" class="bg-orange-500 h-2.5 rounded-full transition-all duration-500"></div>
-                    </div>
+    <main id="app-main">
+        <div id="welcome-screen" class="screen">
+            <div class="w-full max-w-lg text-center">
+                <div class="card p-8 rounded-2xl shadow-2xl">
+                    <div class="logo mx-auto mb-8" style="width: 180px; height: 50px;"></div>
+                    <h1 class="text-3xl font-bold mb-2">Bem-vindo(a) ao Quiz de Afinidade!</h1>
+                    <p class="text-lg text-gray-300 mb-6">Descubra qual projeto ou área do CEMP mais combina com você.</p>
+                    <input type="text" id="name-input" placeholder="Como podemos te chamar?" class="w-full px-4 py-3 rounded-lg bg-gray-800 border border-gray-600 focus:outline-none focus:ring-2 focus:ring-orange-500 text-center text-lg transition-all text-white">
+                    <p id="name-error" class="text-red-400 h-6 text-sm mt-1"></p>
+                    <button id="start-button" class="btn-primary ripple-effect w-full mt-2 py-3 rounded-lg text-lg font-bold uppercase tracking-wider">Começar</button>
                 </div>
-                <h2 id="question-text" class="text-2xl sm:text-3xl font-bold mb-8 text-center min-h-[100px] transition-opacity duration-300"></h2>
-                <div id="answers-container" class="grid grid-cols-1 sm:grid-cols-2 gap-4"></div>
             </div>
         </div>
 
-        <!-- Adicionada a classe .screen para gerenciamento -->
-        <div id="results-screen" class="screen w-full max-w-4xl text-center">
-             <div class="card p-8 sm:p-12 rounded-2xl shadow-2xl">
-                <h1 id="results-title" class="text-3xl sm:text-4xl font-bold mb-1 opacity-0"></h1>
-                <p id="result-type" class="text-lg text-orange-400 font-bold mb-4 opacity-0"></p>
-                <p id="results-subtitle" class="text-lg text-gray-300 mb-10 opacity-0">Descobrimos as áreas que mais combinam com seu perfil.</p>
-
-                <div class="flex flex-col sm:flex-row items-center justify-center gap-8 sm:gap-12">
-                    <div id="result-2-card" class="flex flex-col items-center order-2 sm:order-1 opacity-0" style="animation: float 6s ease-in-out infinite 1s;">
-                        <div class="w-40 h-40 sm:w-48 sm:h-48 rounded-full flex items-center justify-center p-4 text-center" style="background-color: var(--aux-teal);">
-                            <span id="result-2-content"></span>
+        <div id="quiz-screen" class="screen hidden">
+            <div class="w-full max-w-2xl">
+                <div class="card p-6 sm:p-8 rounded-2xl shadow-2xl">
+                    <div class="mb-6">
+                        <div class="flex justify-between items-end mb-1">
+                            <span class="text-sm font-medium text-gray-400">Progresso</span>
+                            <span id="progress-text" class="text-sm font-bold text-orange-400"></span>
                         </div>
-                        <h3 class="mt-4 text-xl font-semibold text-gray-400">2ª Maior Afinidade</h3>
-                    </div>
-                    <div id="result-1-card" class="flex flex-col items-center order-1 sm:order-2 opacity-0" style="animation: float 6s ease-in-out infinite;">
-                        <div class="w-56 h-56 sm:w-72 sm:h-72 rounded-full flex items-center justify-center p-6 text-center" style="background-color: var(--principal-orange);">
-                            <span id="result-1-content"></span>
+                        <div class="w-full bg-gray-700 rounded-full h-2.5">
+                            <div id="progress-bar" class="bg-orange-500 h-2.5 rounded-full transition-all duration-500"></div>
                         </div>
-                        <h3 class="mt-4 text-2xl font-bold">Sua Principal Afinidade!</h3>
                     </div>
+                    <h2 id="question-text" class="text-2xl sm:text-3xl font-bold mb-8 text-center min-h-[100px] transition-opacity duration-300"></h2>
+                    <div id="answers-container" class="grid grid-cols-1 sm:grid-cols-2 gap-4"></div>
                 </div>
-
-                <div id="result-description-card" class="mt-12 opacity-0 text-left">
-                    <h4 class="text-2xl font-bold text-orange-400 mb-3 text-center">Por que essa é a sua área?</h4>
-                    <p id="result-1-description" class="text-lg text-gray-300 max-w-3xl mx-auto bg-gray-900/50 p-6 rounded-lg"></p>
-                </div>
-
-                <div id="other-results-section" class="mt-12 opacity-0">
-                    <h4 class="text-xl font-bold text-gray-300 mb-4 text-center">Demais afinidades:</h4>
-                    <div id="other-results-container" class="flex flex-wrap items-center justify-center gap-4"></div>
-                </div>
-
-                <button id="restart-button" class="btn-primary ripple-effect w-full max-w-xs mx-auto mt-12 py-3 rounded-lg text-lg font-bold opacity-0">Refazer o Quiz</button>
-                
-                <div id="cta-buttons" class="mt-6 flex flex-col sm:flex-row gap-4 justify-center opacity-0">
-                    <a href="https://forms.gle/67Q3tTkFkCbQDkETA" target="_blank" rel="noopener noreferrer" class="ripple-effect flex items-center justify-center gap-2 w-full sm:w-auto bg-transparent border-2 border-green-400 text-green-400 font-bold py-3 px-6 rounded-lg hover:bg-green-400 hover:text-black transition-all">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" viewBox="0 0 16 16"><path d="M9.5 0H4a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h8a2 2 0 0 0 2-2V4.5L9.5 0zM13 14H3V2h6l4 4v8z"/><path d="M4.5 12.5a.5.5 0 0 1 .5-.5h7a.5.5 0 0 1 0 1h-7a.5.5 0 0 1-.5-.5zm0-2a.5.5 0 0 1 .5-.5h7a.5.5 0 0 1 0 1h-7a.5.5 0 0 1-.5-.5zm0-2a.5.5 0 0 1 .5-.5h4a.5.5 0 0 1 0 1h-4a.5.5 0 0 1-.5-.5z"/></svg>
-                        Inscreva-se no PS
-                    </a>
-                    <a href="https://www.instagram.com/cempufc?igsh=MXV4NWo2cnJlbG5wdg==" target="_blank" rel="noopener noreferrer" class="ripple-effect flex items-center justify-center gap-2 w-full sm:w-auto bg-transparent border-2 border-pink-500 text-pink-500 font-bold py-3 px-6 rounded-lg hover:bg-pink-500 hover:text-white transition-all">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" viewBox="0 0 16 16"><path d="M8 0C5.829 0 5.556.01 4.703.048 3.85.088 3.269.222 2.76.42a3.917 3.917 0 0 0-1.417.923A3.927 3.927 0 0 0 .42 2.76C.222 3.268.087 3.85.048 4.7.01 5.555 0 5.827 0 8.001c0 2.172.01 2.444.048 3.297.04.852.174 1.433.372 1.942.205.526.478.972.923 1.417.444.445.89.719 1.416.923.51.198 1.09.333 1.942.372C5.555 15.99 5.827 16 8 16s2.444-.01 3.298-.048c.851-.04 1.434-.174 1.943-.372a3.916 3.916 0 0 0 1.416-.923c.445-.445.718-.891.923-1.417.197-.509.332-1.09.372-1.942C15.99 10.445 16 10.173 16 8s-.01-2.445-.048-3.299c-.04-.851-.175-1.433-.372-1.941a3.926 3.926 0 0 0-.923-1.417A3.911 3.911 0 0 0 13.24.42c-.51-.198-1.092-.333-1.943-.372C10.443.01 10.172 0 7.998 0h.003zm-.717 1.442h.718c2.136 0 2.389.007 3.232.046.78.035 1.204.166 1.486.275.373.145.64.319.92.599.28.28.453.546.598.92.11.282.24.705.275 1.485.039.843.047 1.096.047 3.231s-.008 2.389-.047 3.232c-.035.78-.166 1.203-.275 1.485a2.47 2.47 0 0 1-.599.919c-.28.28-.546.453-.92.598-.28.11-.704.24-1.485.276-.843.038-1.096.047-3.232.047s-2.39-.009-3.233-.047c-.78-.036-1.203-.166-1.485-.276a2.478 2.478 0 0 1-.92-.598 2.48 2.48 0 0 1-.6-.92c-.109-.281-.24-.705-.275-1.485-.038-.843-.046-1.096-.046-3.233s.008-2.388.046-3.231c.035-.78.166-1.204.275-1.486.145-.373.319-.64.599-.92.28-.28.546-.453.92-.598.282-.11.705-.24 1.485-.276.843-.038 1.096-.047 3.232-.047h.001zm4.905 1.882a1.292 1.292 0 1 1 0 2.583 1.292 1.292 0 0 1 0-2.583zM8 4.465a3.535 3.535 0 1 1 0 7.07 3.535 3.535 0 0 1 0-7.07zM8 5.535a2.465 2.465 0 1 0 0 4.93 2.465 2.465 0 0 0 0-4.93z"/></svg>
-                        Siga no Instagram
-                    </a>
-                </div>
-
             </div>
         </div>
 
+        <div id="results-screen" class="screen hidden">
+             <div class="w-full max-w-4xl text-center">
+                 <div class="card p-8 sm:p-12 rounded-2xl shadow-2xl">
+                    <h1 id="results-title" class="text-3xl sm:text-4xl font-bold mb-1 opacity-0"></h1>
+                    <p id="result-type" class="text-lg text-orange-400 font-bold mb-4 opacity-0"></p>
+                    <p id="results-subtitle" class="text-lg text-gray-300 mb-10 opacity-0">Descobrimos as áreas que mais combinam com seu perfil.</p>
+
+                    <div class="flex flex-col sm:flex-row items-center justify-center gap-8 sm:gap-12">
+                        <div id="result-2-card" class="flex flex-col items-center order-2 sm:order-1 opacity-0" style="animation: float 6s ease-in-out infinite 1s;">
+                            <div class="w-40 h-40 sm:w-48 sm:h-48 rounded-full flex items-center justify-center p-4 text-center" style="background-color: var(--aux-teal);">
+                                <span id="result-2-content"></span>
+                            </div>
+                            <h3 class="mt-4 text-xl font-semibold text-gray-400">2ª Maior Afinidade</h3>
+                        </div>
+                        <div id="result-1-card" class="flex flex-col items-center order-1 sm:order-2 opacity-0" style="animation: float 6s ease-in-out infinite;">
+                            <div class="w-56 h-56 sm:w-72 sm:h-72 rounded-full flex items-center justify-center p-6 text-center" style="background-color: var(--principal-orange);">
+                                <span id="result-1-content"></span>
+                            </div>
+                            <h3 class="mt-4 text-2xl font-bold">Sua Principal Afinidade!</h3>
+                        </div>
+                    </div>
+
+                    <div id="result-description-card" class="mt-12 opacity-0 text-left">
+                        <h4 class="text-2xl font-bold text-orange-400 mb-3 text-center">Por que essa é a sua área?</h4>
+                        <p id="result-1-description" class="text-lg text-gray-300 max-w-3xl mx-auto bg-gray-900/50 p-6 rounded-lg"></p>
+                    </div>
+
+                    <div id="other-results-section" class="mt-12 opacity-0">
+                        <h4 class="text-xl font-bold text-gray-300 mb-4 text-center">Demais afinidades:</h4>
+                        <div id="other-results-container" class="flex flex-wrap items-center justify-center gap-4"></div>
+                    </div>
+
+                    <button id="restart-button" class="btn-primary ripple-effect w-full max-w-xs mx-auto mt-12 py-3 rounded-lg text-lg font-bold opacity-0">Refazer o Quiz</button>
+                    
+                    <div id="cta-buttons" class="mt-6 flex flex-col sm:flex-row gap-4 justify-center opacity-0">
+                        <a href="https://forms.gle/67Q3tTkFkCbQDkETA" target="_blank" rel="noopener noreferrer" class="ripple-effect flex items-center justify-center gap-2 w-full sm:w-auto bg-transparent border-2 border-green-400 text-green-400 font-bold py-3 px-6 rounded-lg hover:bg-green-400 hover:text-black transition-all">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" viewBox="0 0 16 16"><path d="M9.5 0H4a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h8a2 2 0 0 0 2-2V4.5L9.5 0zM13 14H3V2h6l4 4v8z"/><path d="M4.5 12.5a.5.5 0 0 1 .5-.5h7a.5.5 0 0 1 0 1h-7a.5.5 0 0 1-.5-.5zm0-2a.5.5 0 0 1 .5-.5h7a.5.5 0 0 1 0 1h-7a.5.5 0 0 1-.5-.5zm0-2a.5.5 0 0 1 .5-.5h4a.5.5 0 0 1 0 1h-4a.5.5 0 0 1-.5-.5z"/></svg>
+                            Inscreva-se no PS
+                        </a>
+                        <a href="https://www.instagram.com/cempufc?igsh=MXV4NWo2cnJlbG5wdg==" target="_blank" rel="noopener noreferrer" class="ripple-effect flex items-center justify-center gap-2 w-full sm:w-auto bg-transparent border-2 border-pink-500 text-pink-500 font-bold py-3 px-6 rounded-lg hover:bg-pink-500 hover:text-white transition-all">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" viewBox="0 0 16 16"><path d="M8 0C5.829 0 5.556.01 4.703.048 3.85.088 3.269.222 2.76.42a3.917 3.917 0 0 0-1.417.923A3.927 3.927 0 0 0 .42 2.76C.222 3.268.087 3.85.048 4.7.01 5.555 0 5.827 0 8.001c0 2.172.01 2.444.048 3.297.04.852.174 1.433.372 1.942.205.526.478.972.923 1.417.444.445.89.719 1.416.923.51.198 1.09.333 1.942.372C5.555 15.99 5.827 16 8 16s2.444-.01 3.298-.048c.851-.04 1.434-.174 1.943-.372a3.916 3.916 0 0 0 1.416-.923c.445-.445.718-.891.923-1.417.197-.509.332-1.09.372-1.942C15.99 10.445 16 10.173 16 8s-.01-2.445-.048-3.299c-.04-.851-.175-1.433-.372-1.941a3.926 3.926 0 0 0-.923-1.417A3.911 3.911 0 0 0 13.24.42c-.51-.198-1.092-.333-1.943-.372C10.443.01 10.172 0 7.998 0h.003zm-.717 1.442h.718c2.136 0 2.389.007 3.232.046.78.035 1.204.166 1.486.275.373.145.64.319.92.599.28.28.453.546.598.92.11.282.24.705.275 1.485.039.843.047 1.096.047 3.231s-.008 2.389-.047 3.232c-.035.78-.166 1.203-.275 1.485a2.47 2.47 0 0 1-.599.919c-.28.28-.546.453-.92.598-.28.11-.704.24-1.485.276-.843.038-1.096.047-3.232.047s-2.39-.009-3.233-.047c-.78-.036-1.203-.166-1.485-.276a2.478 2.478 0 0 1-.92-.598 2.48 2.48 0 0 1-.6-.92c-.109-.281-.24-.705-.275-1.485-.038-.843-.046-1.096-.046-3.233s.008-2.388.046-3.231c.035-.78.166-1.204.275-1.486.145-.373.319-.64.599-.92.28-.28.546-.453.92-.598.282-.11.705-.24 1.485-.276.843-.038 1.096-.047 3.232-.047h.001zm4.905 1.882a1.292 1.292 0 1 1 0 2.583 1.292 1.292 0 0 1 0-2.583zM8 4.465a3.535 3.535 0 1 1 0 7.07 3.535 3.535 0 0 1 0-7.07zM8 5.535a2.465 2.465 0 1 0 0 4.93 2.465 2.465 0 0 0 0-4.93z"/></svg>
+                            Siga no Instagram
+                        </a>
+                    </div>
+                </div>
+             </div>
+        </div>
     </main>
 
     <script>
@@ -241,5 +252,4 @@
                 { question: "Quando confrontado com uma tarefa repetitiva, você...", answers: [ { text: "Prefiro automatizar ou encontrar uma forma mais inteligente de fazer", target: "P&D" }, { text: "Delego para focar no que é mais estratégico", target: "Gestão de Pessoas" }, { text: "Executo com precisão, pois a consistência é importante", target: "Administração" }, { text: "Tento tornar a tarefa mais divertida ou criativa", target: "Marketing" } ] },
                 { question: "O que é mais crucial para o sucesso de um projeto?", answers: [ { text: "Um plano impecável e bem gerenciado", target: "Feira de Empreendedorismo" }, { text: "Uma equipe motivada e alinhada", target: "Gestão de Pessoas" }, { text: "Uma divulgação forte que alcance o público certo", target: "Marketing" }, { text: "Um produto ou solução verdadeiramente inovador", target: "InovaCEMP" } ] },
                 { question: "Você se sente mais energizado ao...", answers: [ { text: "Começar um projeto novo do zero", target: "P&D" }, { text: "Otimizar um processo que já existe", target: "Administração" }, { text: "Conectar-se com parceiros e clientes", target: "Internacionalização" }, { text: "Vender uma ideia ou produto em que acredita", target: "Startcemp" } ] },
-                { question: "Qual tipo de feedback te motiva mais?", answers: [ { text: "Dados e métricas que mostram o resultado do seu trabalho", target: "Marketing" }, { text: "Um elogio sobre sua capacidade de ajudar e apoiar os outros", target: "Mentoring" }, { text: "Reconhecimento pela sua organização e atenção aos detalhes", target: "Administração" }, { text: "Um desafio para pensar em uma solução ainda melhor", target: "InovaCEMP" } ] },
-                { question: "Seu 'sup
+                { question: "Qual tipo de feedback te motiva mais?", 
